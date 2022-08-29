@@ -11,7 +11,7 @@
 
     <ehcache:cache-template name="DefaultCache">
         <ehcache:expiry>
-            <ehcache:tti>3600</ehcache:tti>
+            <ehcache:tti>10</ehcache:tti>
         </ehcache:expiry>
         <ehcache:heap>200</ehcache:heap>
     </ehcache:cache-template>
