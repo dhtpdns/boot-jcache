@@ -15,23 +15,23 @@ public class DataLoader implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         User user = new User();
-        user.setUserName("test1");
+        user.setUserName("hwang");
         user.setPassword("password1");
-        user.setAge(21);
-        user.setProfileName("Test User 1");
-        user.setCity("Toronto");
-        user.setCountry("Canada");
-        user.setPostalCode("M2N 8P3");
+        user.setAge(31);
+        user.setProfileName("황상필바보");
+        user.setCity("서울");
+        user.setCountry("잠실");
+        user.setPostalCode("234234");
         userRepository.save(user);
 
         User user2 = new User();
-        user2.setUserName("test2");
+        user2.setUserName("ose");
         user2.setPassword("password1");
         user2.setAge(21);
-        user2.setProfileName("Test User 2");
-        user2.setCity("Winnipeg");
-        user2.setCountry("Canada");
-        user2.setPostalCode("R2C 0V4");
+        user2.setProfileName("오세운 천재");
+        user2.setCity("서울");
+        user2.setCountry("당산");
+        user2.setPostalCode("39482");
         userRepository.save(user2);
     }
 }
