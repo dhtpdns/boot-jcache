@@ -35,9 +35,10 @@ spring:
 #      enabled: true
 #      settings:
 #        web-allow-others: true
-  cache:
-    jcache:
-      config: classpath:ehcache.xml
+
+#  cache:
+#    jcache:
+#      config: classpath:ehcache.xml
 
   jackson:
     serialization:

@@ -1,17 +1,28 @@
 package com.codepilot.jcache.bootjcache.entity;
 
+import java.io.Serializable;
+
+import javax.persistence.Cacheable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Data;
 import lombok.ToString;
-
-import javax.persistence.*;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "USER")
 @Data
 @ToString
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
+
+@Cacheable
+@org.hibernate.annotations.Cache(region = com.codepilot.jcache.bootjcache.cache.config.CacheConfig.USER_CACHE, usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User implements Serializable {
 
     @Id
@@ -35,5 +46,10 @@ public class User implements Serializable {
 
     @Column(name = "COUNTRY")
     private String country;
+    
+    
+//    public String getCashKey() {
+//    	return this.userName+this.password;
+//    }
 
 }
