@@ -1,12 +1,12 @@
 project:
-  name: jcache
+  name: asdf
 
 #ehcache
 cache:
-  max_bucket: 10000  # 캐시의 용량	
-  item_limit_szie: 1000  #캐시에 저장되는 아이템들의 사이즈 (단위:BYTE) 
-  time_to_idle: 10  # 마지막 캐시 요청 이후 IDLE 타임 동안 재요청이 없는 경우 evic (단위:초) 
-  time_to_live: 10  # 최초 캐시 입력 후 LIVE 타임 동안 저장 (단위:초) 		
+  max_bucket: 10000  
+  item_limit_szie: 1000 
+  time_to_idle: 10 
+  time_to_live: 10
 
 spring:
 #  datasource:

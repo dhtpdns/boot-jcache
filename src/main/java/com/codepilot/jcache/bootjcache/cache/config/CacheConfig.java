@@ -31,6 +31,9 @@ import org.springframework.stereotype.Component;
 import com.codepilot.jcache.bootjcache.cache.enums.CacheConst;
 import com.codepilot.jcache.bootjcache.cache.enums.CacheConst.CacheNames;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Value;
 
 /**
@@ -50,20 +53,47 @@ public class CacheConfig implements CommandLineRunner {
 //    }
 //
 
-
-	//@Value("${cache.item_limit_szie}")
-	//private long CHASING_ITEM_LIMIT_SZIE;
-
-    public static final String TEST_CACHE = "Test";
+	@Value("${cache.max_bucket}")
+	private Long CHASING_MAX_BUCKET;
+	
+	@Value("${cache.item_limit_szie}")
+	private Long CHASING_ITEM_LIMIT_SZIE;
+	
+	@Value("${cache.time_to_idle}")
+	private Long CHASING_TIME_TO_IDLE;
+	
+	@Value("${cache.time_to_live}")
+	private Long CHASING_TIME_TO_LIVE;
+	
 
     private final javax.cache.configuration.Configuration<Object, Object> jcacheConfiguration;
-
+    
+//    public CacheConfig() {
+//    	System.out.println("###################");
+//    	System.out.println("###################");
+//    	System.out.println("CHASING_MAX_BUCKET:"+CHASING_MAX_BUCKET);
+//    	System.out.println("CHASING_ITEM_LIMIT_SZIE:"+CHASING_ITEM_LIMIT_SZIE);
+//    	System.out.println("CHASING_TIME_TO_IDLE:"+CHASING_TIME_TO_IDLE);
+//    	System.out.println("CHASING_TIME_TO_LIVE:"+CHASING_TIME_TO_LIVE);
+//    	
+//    	System.out.println("###################");
+//    	System.out.println("###################");
+//        this.jcacheConfiguration = Eh107Configuration.fromEhcacheCacheConfiguration(CacheConfigurationBuilder.newCacheConfigurationBuilder(Object.class, Object.class,
+//                ResourcePoolsBuilder.newResourcePoolsBuilder()
+//                        .heap(CHASING_MAX_BUCKET, EntryUnit.ENTRIES))      											// Chasing Elemnet Count
+//                .withSizeOfMaxObjectSize(CHASING_ITEM_LIMIT_SZIE, MemoryUnit.B)  									// Caching Elemnet Max Size
+//                .withExpiry(ExpiryPolicyBuilder.timeToIdleExpiration(Duration.ofSeconds(CHASING_TIME_TO_IDLE)))   	// 마지막 캐시 요청 이후 10초동안 재요청이 없는 경우 나료
+//                .withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(CHASING_TIME_TO_LIVE)))); 	// 최초 캐시 입력 후 10초 동안 저장
+//        
+//    	logger.info("CHASING_MAX_BUCKET ({})" + "ITEM_LIMIT_SZIE ({})" + "TIME_TO_IDLE ({})" + "TIME_TO_LIVE ({})",CHASING_MAX_BUCKET,CHASING_ITEM_LIMIT_SZIE,CHASING_TIME_TO_IDLE,CHASING_TIME_TO_LIVE );
+//    }
+    
     public CacheConfig( @Value("${cache.max_bucket}") long chasingMaxBucket,
     		@Value("${cache.item_limit_szie}") long itemLimitSzie,
     		@Value("${cache.time_to_idle}") long timeToIdle,
     		@Value("${cache.time_to_live}") long timeTo_live
     		) {
-    
+    	    	
         this.jcacheConfiguration = Eh107Configuration.fromEhcacheCacheConfiguration(CacheConfigurationBuilder.newCacheConfigurationBuilder(Object.class, Object.class,
                 ResourcePoolsBuilder.newResourcePoolsBuilder()
                         .heap(chasingMaxBucket, EntryUnit.ENTRIES))      								// Chasing Elemnet Count
@@ -83,7 +113,7 @@ public class CacheConfig implements CommandLineRunner {
     public JCacheManagerCustomizer cacheManagerCustomizer() {
         return cm -> {
         	Arrays.stream(CacheNames.values()).forEach(cache->{
-        		cm.createCache(cache.name(), jcacheConfiguration);
+        		cm.createCache(cache.getValue(), jcacheConfiguration);
         	});
             //cm.createCache(USER_CACHE, jcacheConfiguration);            
         };
