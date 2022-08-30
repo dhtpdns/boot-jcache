@@ -1,6 +1,8 @@
 package com.codepilot.jcache.bootjcache.service.impl;
 
 import com.codepilot.jcache.bootjcache.cache.CacheAgent;
+import com.codepilot.jcache.bootjcache.cache.enums.CacheConst;
+import com.codepilot.jcache.bootjcache.cache.enums.CacheConst.CacheNames;
 import com.codepilot.jcache.bootjcache.entity.User;
 import com.codepilot.jcache.bootjcache.repository.UserRepository;
 import com.codepilot.jcache.bootjcache.service.UserService;
@@ -18,6 +20,7 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheConfig;
@@ -38,12 +41,18 @@ public class UserServiceImpl implements UserService {
 	
 	final CacheAgent cacheAgent;
 	
+	//@Value("${project.name}")
+	//private String aaa;
+	
+
 	@Override
 	@Cacheable(key = "#userId")
 	public User getUser(String userId) throws Exception {
 		log.info("Fetching the user {}", userId);
 		Optional<User> user = Optional.ofNullable(userRepository.findById(userId).orElseThrow(NoSuchElementException::new));
 		log.info("Successfully fetched user {}", user.toString());
+		
+		//log.info("PROJECT_NAME {}", aaa);
 		return user.get();
 	}
 
@@ -82,20 +91,20 @@ public class UserServiceImpl implements UserService {
 	// @Override
 	@Override
 	public User getUserByCache(String userId) {
-		User user = (User) cacheAgent.getCacheValue(User.class,com.codepilot.jcache.bootjcache.cache.config.CacheConfig.USER_CACHE, userId);
+		User user = (User) cacheAgent.getCacheValue(User.class,CacheNames.USER.name(), userId);
 		return user;
 	}
 	
 	@Override
 	public void putUserCache(User user) {
-		cacheAgent.putCacheValue(com.codepilot.jcache.bootjcache.cache.config.CacheConfig.USER_CACHE,user.getUserName(),user);
+		cacheAgent.putCacheValue(CacheNames.USER.name(),user.getUserName(),user);
 		
-		cacheAgent.getCacheValue(User.class,com.codepilot.jcache.bootjcache.cache.config.CacheConfig.USER_CACHE, user.getUserName());
+		cacheAgent.getCacheValue(User.class,CacheNames.USER.name(), user.getUserName());
 	}
 	
 	@Override
 	public boolean evicUserCache(String userId) {
-		return cacheAgent.cacheEvic(com.codepilot.jcache.bootjcache.cache.config.CacheConfig.USER_CACHE,userId);
+		return cacheAgent.cacheEvic(CacheNames.USER.name(),userId);
 	}
 	
 

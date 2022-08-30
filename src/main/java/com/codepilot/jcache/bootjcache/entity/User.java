@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.codepilot.jcache.bootjcache.cache.enums.CacheConst.CacheNames;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
@@ -22,7 +23,7 @@ import lombok.ToString;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 
 @Cacheable
-@org.hibernate.annotations.Cache(region = com.codepilot.jcache.bootjcache.cache.config.CacheConfig.USER_CACHE, usage = CacheConcurrencyStrategy.READ_WRITE)
+@org.hibernate.annotations.Cache(region = "USER", usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User implements Serializable {
 
     @Id

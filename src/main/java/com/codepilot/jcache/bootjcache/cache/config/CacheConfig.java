@@ -2,6 +2,7 @@ package com.codepilot.jcache.bootjcache.cache.config;
 
 
 import java.time.Duration;
+import java.util.Arrays;
 
 import javax.cache.CacheManager;
 
@@ -27,6 +28,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import com.codepilot.jcache.bootjcache.cache.enums.CacheConst;
+import com.codepilot.jcache.bootjcache.cache.enums.CacheConst.CacheNames;
+
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * reference doc
@@ -44,19 +49,29 @@ public class CacheConfig implements CommandLineRunner {
 //        this.cacheManager = cacheManager;
 //    }
 //
-    
-    public static final String USER_CACHE = "User";
+
+
+	//@Value("${cache.item_limit_szie}")
+	//private long CHASING_ITEM_LIMIT_SZIE;
+
     public static final String TEST_CACHE = "Test";
 
     private final javax.cache.configuration.Configuration<Object, Object> jcacheConfiguration;
 
-    public CacheConfig() {
+    public CacheConfig( @Value("${cache.max_bucket}") long chasingMaxBucket,
+    		@Value("${cache.item_limit_szie}") long itemLimitSzie,
+    		@Value("${cache.time_to_idle}") long timeToIdle,
+    		@Value("${cache.time_to_live}") long timeTo_live
+    		) {
+    
         this.jcacheConfiguration = Eh107Configuration.fromEhcacheCacheConfiguration(CacheConfigurationBuilder.newCacheConfigurationBuilder(Object.class, Object.class,
                 ResourcePoolsBuilder.newResourcePoolsBuilder()
-                        .heap(10000, EntryUnit.ENTRIES))      // Chasing Elemnet Count
-                .withSizeOfMaxObjectSize(1000, MemoryUnit.B)  // Caching Elemnet Max Size
-                .withExpiry(ExpiryPolicyBuilder.timeToIdleExpiration(Duration.ofSeconds(10)))   // 마지막 캐시 요청 이후 10초동안 재요청이 없는 경우 나료
-                .withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(10)))); // 최초 캐시 입력 후 10초 동안 저장
+                        .heap(chasingMaxBucket, EntryUnit.ENTRIES))      								// Chasing Elemnet Count
+                .withSizeOfMaxObjectSize(itemLimitSzie, MemoryUnit.B)  									// Caching Elemnet Max Size
+                .withExpiry(ExpiryPolicyBuilder.timeToIdleExpiration(Duration.ofSeconds(timeToIdle)))   // 마지막 캐시 요청 이후 10초동안 재요청이 없는 경우 나료
+                .withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(timeTo_live)))); 		// 최초 캐시 입력 후 10초 동안 저장
+        
+    	logger.info("CHASING_MAX_BUCKET ({})" + "ITEM_LIMIT_SZIE ({})" + "TIME_TO_IDLE ({})" + "TIME_TO_LIVE ({})",chasingMaxBucket,itemLimitSzie,timeToIdle,timeTo_live );
     }
 
     @Bean
@@ -67,8 +82,10 @@ public class CacheConfig implements CommandLineRunner {
     @Bean
     public JCacheManagerCustomizer cacheManagerCustomizer() {
         return cm -> {
-            cm.createCache(USER_CACHE, jcacheConfiguration);
-            cm.createCache(TEST_CACHE, jcacheConfiguration);
+        	Arrays.stream(CacheNames.values()).forEach(cache->{
+        		cm.createCache(cache.name(), jcacheConfiguration);
+        	});
+            //cm.createCache(USER_CACHE, jcacheConfiguration);            
         };
     }
     
